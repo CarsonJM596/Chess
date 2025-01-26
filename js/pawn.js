@@ -48,20 +48,25 @@ function checkPawnForward(startSqId, pieceColor, boardSq) {
     const direction = pieceColor === "white" ? 1 : -1;
     currRank += direction;
     currSqId = currFile + currRank;
-    let currSq = boardSq.find((element) => element.squareId === currSqId);
 
-    if (currSq && currSq.pieceColor === "blank") {
+    // Check forward square
+    let currSq = boardSq.find((element) => element.squareId === currSqId);
+    let sqContent = currSq ? currSq.pieceColor : "blank";
+    if (sqContent === "blank") {
         legalSquares.push(currSqId);
 
+        // Check if pawn is on starting rank (2 for white, 7 for black) and can move two squares
         if ((pieceColor === "white" && rankNum === 2) || (pieceColor === "black" && rankNum === 7)) {
             currRank += direction;
             currSqId = currFile + currRank;
             currSq = boardSq.find((element) => element.squareId === currSqId);
-
-            if (currSq && currSq.pieceColor === "blank") {
+            sqContent = currSq ? currSq.pieceColor : "blank";
+            if (sqContent === "blank") {
                 legalSquares.push(currSqId);
             }
         }
     }
+
     return legalSquares;
 }
+
