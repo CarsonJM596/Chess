@@ -1,72 +1,79 @@
-function getPawnMoves(startSqId, pieceColor, boardSq) {
-    let diagonalSq = checkPawnDiagonalCaptures(startSqId, pieceColor, boardSq);
-    let forwardSq = checkPawnForward(startSqId, pieceColor, boardSq);
-    let legalSquares = [...diagonalSq, ...forwardSq];
+function getPawnMoves(startingSquareId, pieceColor, boardSquaresArray) {
+    let diogonalSquares = checkPawnDiagonalCaptures(
+      startingSquareId,
+      pieceColor,
+      boardSquaresArray
+    );
+    let forwardSquares = checkPawnForwardMoves(
+      startingSquareId,
+      pieceColor,
+      boardSquaresArray
+    );
+    let legalSquares = [...diogonalSquares, ...forwardSquares];
     return legalSquares;
 }
-
-function checkPawnDiagonalCaptures(startSqId, pieceColor, boardSq) {
-    const file = startSqId.charAt(0);
-    const rank = startSqId.charAt(1);
-    const rankNum = parseInt(rank);
+function checkPawnDiagonalCaptures(
+    startingSquareId,
+    pieceColor,
+    boardSquaresArray
+  ) {
+    const file = startingSquareId.charAt(0);
+    const rank = startingSquareId.charAt(1);
+    const rankNumber = parseInt(rank);
     let legalSquares = [];
-    let currFile = file;
-    let currRank = rankNum;
-    let currSqId = currFile + currRank;
-
-    const direction = pieceColor === "white" ? 1 : -1;
-    if (!(rank === '8' && direction === 1) && !(rank === '1' && direction === -1)) {
-        currRank += direction;
-    }
-
+    let currentFile = file;
+    let currentRank = rankNumber;
+    let currentSquareId = currentFile + currentRank;
+  
+   const direction = pieceColor == "white" ? 1 : -1;
+   if(!(rank==8 && direction==1) && !(rank==1 && direction==-1))
+     currentRank += direction;
     for (let i = -1; i <= 1; i += 2) {
-        currFile = String.fromCharCode(file.charCodeAt(0) + i);
-        if (currFile >= "a" && currFile <= "h" && currRank <= 8 && currRank >= 1) {
-            currSqId = currFile + currRank;
-            let currentSq = boardSq.find((element) => element.squareId === currSqId);
-            if (currentSq) {
-                let sqContent = currentSq.pieceColor;
-                if (sqContent !== "blank" && sqContent !== pieceColor) {
-                    legalSquares.push(currSqId);
-                }
-            }
-        }
+      currentFile = String.fromCharCode(file.charCodeAt(0) + i);
+      if (currentFile >= "a" && currentFile <= "h" && currentRank<=8 && currentRank>=1){
+        currentSquareId = currentFile + currentRank;
+        let currentSquare = boardSquaresArray.find(
+          (element) => element.squareId === currentSquareId
+        );
+        let squareContent = currentSquare.pieceColor;
+        if (squareContent != "blank" && squareContent != pieceColor)
+          legalSquares.push(currentSquareId);
+      }
     }
     return legalSquares;
 }
-
-function checkPawnForward(startSqId, pieceColor, boardSq) {
-    const file = startSqId.charAt(0);
-    const rank = startSqId.charAt(1);
-    const rankNum = parseInt(rank);
+function checkPawnForwardMoves(
+    startingSquareId,
+    pieceColor,
+    boardSquaresArray
+  ) {
+    const file = startingSquareId.charAt(0);
+    const rank = startingSquareId.charAt(1);
+    const rankNumber = parseInt(rank);
     let legalSquares = [];
-
-    let currFile = file;
-    let currRank = rankNum;
-    let currSqId = currFile + currRank;
-
-    const direction = pieceColor === "white" ? 1 : -1;
-    currRank += direction;
-    currSqId = currFile + currRank;
-
-    // Check forward square
-    let currSq = boardSq.find((element) => element.squareId === currSqId);
-    let sqContent = currSq ? currSq.pieceColor : "blank";
-    if (sqContent === "blank") {
-        legalSquares.push(currSqId);
-
-        // Check if pawn is on starting rank (2 for white, 7 for black) and can move two squares
-        if ((pieceColor === "white" && rankNum === 2) || (pieceColor === "black" && rankNum === 7)) {
-            currRank += direction;
-            currSqId = currFile + currRank;
-            currSq = boardSq.find((element) => element.squareId === currSqId);
-            sqContent = currSq ? currSq.pieceColor : "blank";
-            if (sqContent === "blank") {
-                legalSquares.push(currSqId);
-            }
-        }
-    }
-
+  
+    let currentFile = file;
+    let currentRank = rankNumber;
+    let currentSquareId = currentFile + currentRank;
+  
+    const direction = pieceColor == "white" ? 1 : -1;
+    currentRank += direction;
+    currentSquareId = currentFile + currentRank;
+    let currentSquare = boardSquaresArray.find(
+      (element) => element.squareId === currentSquareId
+    );
+    let squareContent = currentSquare.pieceColor;
+    if (squareContent != "blank") return legalSquares;
+    legalSquares.push(currentSquareId);
+    if (rankNumber != 2 && rankNumber != 7) return legalSquares;
+    currentRank += direction;
+    currentSquareId = currentFile + currentRank;
+    currentSquare = boardSquaresArray.find(
+      (element) => element.squareId === currentSquareId
+    );
+    squareContent = currentSquare.pieceColor;
+    if (squareContent != "blank")
+      if (squareContent != "blank") return legalSquares;
+    legalSquares.push(currentSquareId);
     return legalSquares;
 }
-
