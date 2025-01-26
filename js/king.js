@@ -17,7 +17,7 @@ function getKingMoves(startingSquareId, pieceColor, boardSquaresArray) {
       [1, 0],
     ];
   
-    //  for (let move of moves)
+    
     moves.forEach((move) => {
       currentFile = file + move[0];
       currentRank = rankNumber + move[1];
@@ -107,7 +107,7 @@ function isMoveValidAgainstCheck(legalSquares,startingSquareId,pieceColor,pieceT
     legalSquaresCopy =legalSquares.slice();
     legalSquaresCopy.forEach((element) => {
       let destinationId = element;
-      //boardSquaresArrayCopy.length=0;
+      
       boardSquaresArrayCopy = deepCopyArray(boardSquaresArray);
       updateBoardSquaresArray(
         startingSquareId,
@@ -139,6 +139,7 @@ function checkForCheckMate() {
     isWhiteTurn  ? (message="Black Wins") : (message="White Wins");
     showAlert(message);
 }
+
 function showAlert(message) {
     const alert= document.getElementById("alert");
     alert.innerHTML=message;
