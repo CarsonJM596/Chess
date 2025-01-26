@@ -92,7 +92,7 @@ function drag(ev) {
     }
 }
 
-function drop(ev){
+function drop(ev) {
     ev.preventDefault();
     let data = ev.dataTransfer.getData("text");
     let [pieceId, startSqId] = data.split("|");
@@ -100,7 +100,7 @@ function drop(ev){
     let legalSquares = JSON.parse(legalSquaresJson);
 
     const piece = document.getElementById(pieceId);
-    const pieceColor = document.getAttribute("color");
+    const pieceColor = piece.getAttribute("color");
     const pieceType = piece.classList[1];
 
     const destSq = ev.currentTarget;
@@ -108,23 +108,23 @@ function drop(ev){
 
     legalSquares = isMoveValidInCheck(legalSquares, startSqId, pieceColor, pieceType);
 
-    if(pieceType == "king"){
+    if (pieceType == "king") {
         let isCheck = isKingInCheck(destSqId, pieceColor, boardSq);
         if (isCheck) return;
-        whiteTurn ? (whiteKingSq=destSqId) : (blackKingSq=destSqId);
+        whiteTurn ? (whiteKingSq = destSqId) : (blackKingSq = destSqId);
     }
     let sqContent = getPieceAtSq(destSqId, boardSq);
-    if (sqContent == "blank" && legalSquares.includes(destSqId)){
+    if (sqContent == "blank" && legalSquares.includes(destSqId)) {
         destSq.appendChild(piece);
         whiteTurn = !whiteTurn;
         updateBoardSq(startSqId, destSqId, boardSq);
         checkForMate();
         return;
     }
-    if(sqContent != "blank" && legalSquares.includes(destSqId)){
+    if (sqContent != "blank" && legalSquares.includes(destSqId)) {
         let children = destSq.children;
-        for (let i = 0; i < children.length; i++){
-            if(!children[i].classList.contains('coordinate')){
+        for (let i = 0; i < children.length; i++) {
+            if (!children[i].classList.contains('coordinate')) {
                 destSq.removeChild(children[i]);
             }
         }
@@ -139,12 +139,13 @@ function drop(ev){
 setupBoardSq();
 setupPieces();
 fillBoard();
-function getPieceAtSq(SqId, boardSq){
-    let currSq = boardSq.find((element) => element.SqId === SqId);
+
+function getPieceAtSq(SqId, boardSq) {
+    let currSq = boardSq.find((element) => element.squareId === SqId); 
     const color = currSq.pieceColor;
     const pieceType = currSq.pieceType;
     const pieceId = currSq.pieceId;
-    return {pieceColor: color, pieceType: pieceType, pieceId:pieceId};
+    return { pieceColor: color, pieceType: pieceType, pieceId: pieceId };
 }
 
 function getLegalMoves(startSqId, piece, boardSq){
@@ -188,19 +189,13 @@ function getAllLegalMoves(sqArray, color){
     return sqArray.filter((square) => square.pieceColor === color).flatMap((square) => {
             const { pieceColor, pieceType, pieceId } = getPieceAtSquare(square.squareId, sqArray);
 
-            // If there's no piece on the square, skip it
             if (pieceId === "blank") return [];
 
-            // Deep copy the board to avoid modifying the original state
             let boardSqCopy = deepCopyArray(sqArray);
             const pieceObj = { pieceColor, pieceType, pieceId };
-
-            // Get all possible legal moves for the piece
             let legalSquares = getLegalMoves(square.squareId, pieceObj, boardSqCopy);
             
-            // Filter legal moves that leave the king in check
             legalSquares = isMoveValidAgainstCheck(legalSquares, square.squareId, pieceColor, pieceType);
-
             return legalSquares;
         });
         
