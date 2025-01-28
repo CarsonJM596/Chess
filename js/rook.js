@@ -1,4 +1,13 @@
+function rookHasMoved(pieceColor,startingSquareId){
+
+  let result=moves.find((element)=>(element.pieceColor===pieceColor)&&(element.pieceType==="rook")&&(element.from==startingSquareId));
+  if(result!=undefined) return true;
+  return false;
+  
+}
+
 function getRookMoves(startingSquareId, pieceColor, boardSquaresArray) {
+
     let moveToEighthRankSquares = moveToEighthRank(startingSquareId, pieceColor, boardSquaresArray);
     let moveToFirstRankSquares = moveToFirstRank(startingSquareId,pieceColor,boardSquaresArray);
     let moveToAFileSquares = moveToAFile(startingSquareId, pieceColor, boardSquaresArray);
@@ -10,6 +19,7 @@ function getRookMoves(startingSquareId, pieceColor, boardSquaresArray) {
       ...moveToHFileSquares,
     ];
     return legalSquares;
+
 }
 
 function moveToEighthRank(startingSquareId, pieceColor, boardSquaresArray) {

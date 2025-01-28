@@ -1,10 +1,14 @@
 let boardSquaresArray = [];
+let moves = [];
+const castlingSquares = ["g1", "g8", "c1", "c8"];
 let isWhiteTurn = true;
-let whiteKingSquare="e1";
-let blackKingSquare="e8";
 const boardSquares = document.getElementsByClassName("square");
 const pieces = document.getElementsByClassName("piece");
 const piecesImages = document.getElementsByTagName("img");
+
+function makeMove(startingSquareId, destinationSquareId, pieceType, pieceColor, captured){
+  moves.push({from: startingSquareId, to:destinationSquareId, pieceType : pieceType, pieceColor:pieceColor, captured:captured});
+}
 
 function fillBoardSquaresArray() {
   const boardSquares = document.getElementsByClassName("square");
@@ -29,17 +33,9 @@ function fillBoardSquaresArray() {
     boardSquaresArray.push(arrayElement);
   }
 }
-function updateBoardSquaresArray(
-  currentSquareId,
-  destinationSquareId,
-  boardSquaresArray
-) {
-    let currentSquare = boardSquaresArray.find(
-        (element) => element.squareId === currentSquareId
-    );
-    let destinationSquareElement = boardSquaresArray.find(
-        (element) => element.squareId === destinationSquareId
-    );
+function updateBoardSquaresArray(currentSquareId, destinationSquareId, boardSquaresArray) {
+    let currentSquare = boardSquaresArray.find((element) => element.squareId === currentSquareId);
+    let destinationSquareElement = boardSquaresArray.find((element) => element.squareId === destinationSquareId);
     let pieceColor = currentSquare.pieceColor;
     let pieceType = currentSquare.pieceType;
     let pieceId= currentSquare.pieceId;
@@ -126,24 +122,29 @@ function drop(ev) {
     if (pieceType == "king") {
         let isCheck = isKingInCheck(destinationSquareId, pieceColor, boardSquaresArray);
         if (isCheck) return;
-        isWhiteTurn  ? (whiteKingSquare=destinationSquareId) : (blackKingSquare=destinationSquareId);
     }
 
         let squareContent=getPieceAtSquare(destinationSquareId,boardSquaresArray);
-    if (
-        squareContent.pieceColor == "blank" &&
-        legalSquares.includes(destinationSquareId)
-    ) {
+    if (squareContent.pieceColor == "blank" && legalSquares.includes(destinationSquareId)) {
+        
+        if (pieceType =="king")
+          isCheck=isKingInCheck(startingSquareId,pieceColor,boardSquaresArray);
+
+        if(pieceType=="king" && !kingHasMoved(pieceColor) && castlingSquares.includes(destinationSquareId)&& !isCheck){
+
+          performCastling(piece,pieceColor,startingSquareId,destinationSquareId,boardSquaresArray);
+          return;
+        }
+        if(pieceType=="king" && !kingHasMoved(pieceColor) && castlingSquares.includes(destinationSquareId)&& isCheck) return;
         destinationSquare.appendChild(piece);
         isWhiteTurn = !isWhiteTurn;
         updateBoardSquaresArray(startingSquareId, destinationSquareId, boardSquaresArray);
+        let captured = false;
+        makeMove(startingSquareId, destinationSquareId, pieceType, pieceColor, captured)
         checkForCheckMate();
         return;
     }
-    if (
-        squareContent.pieceColor!= "blank" &&
-        legalSquares.includes(destinationSquareId)
-    ) {
+    if (squareContent.pieceColor!= "blank" && legalSquares.includes(destinationSquareId)) {
         let children = destinationSquare.children;
         for (let i = 0; i < children.length; i++) {
             if (!children[i].classList.contains('coordinate')) {
@@ -154,6 +155,8 @@ function drop(ev) {
         destinationSquare.appendChild(piece);
         isWhiteTurn = !isWhiteTurn;
         updateBoardSquaresArray(startingSquareId, destinationSquareId, boardSquaresArray);
+        let captured = true;
+        makeMove(startingSquareId, destinationSquareId, pieceType, pieceColor, captured)
         checkForCheckMate();
         return;
     }
@@ -215,4 +218,28 @@ function getAllPossibleMoves(squaresArray, color) {
   
         return legalSquares;
       });
+}
+
+function isShortCastlePossible(pieceColor, boardSquaresArray){
+
+  let  rank = pieceColor === "white" ? "1" : "8";
+  let fSquare = boardSquaresArray.find(element=>element.squareId===`f${rank}`);
+  let gSquare = boardSquaresArray.find(element=>element.squareId===`g${rank}`);
+  if (fSquare.pieceColor !=="blank" || gSquare.pieceColor!=="blank" || kingHasMoved(pieceColor)||rookHasMoved(pieceColor,`h${rank}`)){
+    return "blank";
+  }
+
+  return `g${rank}`;
+}
+
+function isLongCastlePossible (pieceColor, boardSquaresArray){
+  let rank = pieceColor === "white" ? "1" : "8";
+  let dSquare=boardSquaresArray.find(element=>element.squareId===`d${rank}`);
+  let cSquare=boardSquaresArray.find(element=>element.squareId===`c${rank}`);
+  let bSquare=boardSquaresArray.find(element=>element.squareId===`b${rank}`);
+
+  if(dSquare.pieceColor !=="blank" || cSquare.pieceColor!=="blank"||bSquare.pieceColor!=="blank" || kingHasMoved(pieceColor)||rookHasMoved(pieceColor,`a${rank}`)){
+    return "blank";
+  }
+  return `c${rank}`;
 }
