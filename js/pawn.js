@@ -1,22 +1,10 @@
 function getPawnMoves(startingSquareId, pieceColor, boardSquaresArray) {
-    let diogonalSquares = checkPawnDiagonalCaptures(
-      startingSquareId,
-      pieceColor,
-      boardSquaresArray
-    );
-    let forwardSquares = checkPawnForwardMoves(
-      startingSquareId,
-      pieceColor,
-      boardSquaresArray
-    );
+    let diogonalSquares = checkPawnDiagonalCaptures(startingSquareId, pieceColor, boardSquaresArray);
+    let forwardSquares = checkPawnForwardMoves(startingSquareId, pieceColor, boardSquaresArray);
     let legalSquares = [...diogonalSquares, ...forwardSquares];
     return legalSquares;
 }
-function checkPawnDiagonalCaptures(
-    startingSquareId,
-    pieceColor,
-    boardSquaresArray
-  ) {
+function checkPawnDiagonalCaptures(startingSquareId, pieceColor, boardSquaresArray) {
     const file = startingSquareId.charAt(0);
     const rank = startingSquareId.charAt(1);
     const rankNumber = parseInt(rank);
@@ -42,11 +30,7 @@ function checkPawnDiagonalCaptures(
     }
     return legalSquares;
 }
-function checkPawnForwardMoves(
-    startingSquareId,
-    pieceColor,
-    boardSquaresArray
-  ) {
+function checkPawnForwardMoves(startingSquareId, pieceColor, boardSquaresArray) {
     const file = startingSquareId.charAt(0);
     const rank = startingSquareId.charAt(1);
     const rankNumber = parseInt(rank);
@@ -59,18 +43,14 @@ function checkPawnForwardMoves(
     const direction = pieceColor == "white" ? 1 : -1;
     currentRank += direction;
     currentSquareId = currentFile + currentRank;
-    let currentSquare = boardSquaresArray.find(
-      (element) => element.squareId === currentSquareId
-    );
+    let currentSquare = boardSquaresArray.find((element) => element.squareId === currentSquareId);
     let squareContent = currentSquare.pieceColor;
     if (squareContent != "blank") return legalSquares;
     legalSquares.push(currentSquareId);
     if (rankNumber != 2 && rankNumber != 7) return legalSquares;
     currentRank += direction;
     currentSquareId = currentFile + currentRank;
-    currentSquare = boardSquaresArray.find(
-      (element) => element.squareId === currentSquareId
-    );
+    currentSquare = boardSquaresArray.find((element) => element.squareId === currentSquareId);
     squareContent = currentSquare.pieceColor;
     if (squareContent != "blank")
       if (squareContent != "blank") return legalSquares;

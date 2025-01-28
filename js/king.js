@@ -21,12 +21,7 @@ function getKingMoves(startingSquareId, pieceColor, boardSquaresArray) {
     moves.forEach((move) => {
       currentFile = file + move[0];
       currentRank = rankNumber + move[1];
-      if (
-        currentFile >= 0 &&
-        currentFile <= 7 &&
-        currentRank > 0 &&
-        currentRank <= 8
-      ) {
+      if (currentFile >= 0 && currentFile <= 7 && currentRank > 0 && currentRank <= 8) {
         let currentSquareId = String.fromCharCode(currentFile + 97) + currentRank;
         let currentSquare = boardSquaresArray.find(
           (element) => element.squareId === currentSquareId
@@ -75,11 +70,7 @@ function isKingInCheck(SquareId, pieceColor, boardSquaresArray) {
       }
     }
   
-    legalSquares = checkPawnDiagonalCaptures(
-      SquareId,
-      pieceColor,
-      boardSquaresArray
-    );
+    legalSquares = checkPawnDiagonalCaptures(SquareId, pieceColor, boardSquaresArray);
     for (let squareId of legalSquares) {
       let pieceProperties = getPieceAtSquare(squareId, boardSquaresArray);
       if (
@@ -92,10 +83,7 @@ function isKingInCheck(SquareId, pieceColor, boardSquaresArray) {
     legalSquares = getKingMoves(SquareId, pieceColor, boardSquaresArray);
     for (let squareId of legalSquares) {
       let pieceProperties = getPieceAtSquare(squareId, boardSquaresArray);
-      if (
-        pieceProperties.pieceType == "king" &&
-        pieceColor != pieceProperties.color
-      ) {
+      if (pieceProperties.pieceType == "king" &&pieceColor != pieceProperties.color) {
         return true;
       }
     }
@@ -109,11 +97,7 @@ function isMoveValidAgainstCheck(legalSquares,startingSquareId,pieceColor,pieceT
       let destinationId = element;
       
       boardSquaresArrayCopy = deepCopyArray(boardSquaresArray);
-      updateBoardSquaresArray(
-        startingSquareId,
-        destinationId,
-        boardSquaresArrayCopy
-      );
+      updateBoardSquaresArray(startingSquareId, destinationId, boardSquaresArrayCopy);
       
       if (pieceType != "king" && isKingInCheck(kingSquare, pieceColor, boardSquaresArrayCopy)) {
         legalSquares = legalSquares.filter((item) => item !== destinationId);
@@ -130,10 +114,10 @@ function checkForCheckMate() {
     let kingSqaure=isWhiteTurn  ? whiteKingSquare: blackKingSquare;
     let pieceColor=isWhiteTurn  ? "white": "black";
     let boardSquaresArrayCopy = deepCopyArray(boardSquaresArray);
-    let kingIsCheck=isKingInCheck(kingSqaure,pieceColor,boardSquaresArrayCopy);
+    let kingIsCheck=isKingInCheck(kingSqaure, pieceColor, boardSquaresArrayCopy);
     
     if(!kingIsCheck) return;
-    let possibleMoves=getAllPossibleMoves(boardSquaresArrayCopy,pieceColor);
+    let possibleMoves = getAllPossibleMoves(boardSquaresArrayCopy, pieceColor);
     if(possibleMoves.length>0) return;
     let message="";
     isWhiteTurn  ? (message="Black Wins") : (message="White Wins");

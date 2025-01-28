@@ -1,24 +1,8 @@
 function getRookMoves(startingSquareId, pieceColor, boardSquaresArray) {
-    let moveToEighthRankSquares = moveToEighthRank(
-      startingSquareId,
-      pieceColor,
-      boardSquaresArray
-    );
-    let moveToFirstRankSquares = moveToFirstRank(
-      startingSquareId,
-      pieceColor,
-      boardSquaresArray
-    );
-    let moveToAFileSquares = moveToAFile(
-      startingSquareId,
-      pieceColor,
-      boardSquaresArray
-    );
-    let moveToHFileSquares = moveToHFile(
-      startingSquareId,
-      pieceColor,
-      boardSquaresArray
-    );
+    let moveToEighthRankSquares = moveToEighthRank(startingSquareId, pieceColor, boardSquaresArray);
+    let moveToFirstRankSquares = moveToFirstRank(startingSquareId,pieceColor,boardSquaresArray);
+    let moveToAFileSquares = moveToAFile(startingSquareId, pieceColor, boardSquaresArray);
+    let moveToHFileSquares = moveToHFile(startingSquareId, pieceColor, boardSquaresArray);
     let legalSquares = [
       ...moveToEighthRankSquares,
       ...moveToFirstRankSquares,

@@ -24,13 +24,8 @@ function fillBoardSquaresArray() {
       color = "blank";
       pieceType = "blank";
       pieceId ="blank";
-      }
-    let arrayElement = {
-    squareId: square.id,
-    pieceColor: color,
-    pieceType: pieceType,
-    pieceId:pieceId
-    };
+    }
+    let arrayElement = {squareId: square.id,pieceColor: color,pieceType: pieceType,pieceId:pieceId};
     boardSquaresArray.push(arrayElement);
   }
 }
@@ -82,8 +77,7 @@ function setupPieces() {
   for (let i = 0; i < pieces.length; i++) {
     pieces[i].addEventListener("dragstart", drag);
     pieces[i].setAttribute("draggable", true);
-    pieces[i].id =
-      pieces[i].className.split(" ")[1] + pieces[i].parentElement.id;
+    pieces[i].id = pieces[i].className.split(" ")[1] + pieces[i].parentElement.id;
   }
   for (let i = 0; i < piecesImages.length; i++) {
     piecesImages[i].setAttribute("draggable", false);
@@ -106,11 +100,7 @@ function drag(ev) {
     const startingSquareId = piece.parentNode.id;
     ev.dataTransfer.setData("text", pieceId + "|" + startingSquareId);
     const pieceObject ={pieceColor:pieceColor,pieceType:pieceType,pieceId:pieceId}
-    let legalSquares = getPossibleMoves(
-      startingSquareId,
-      pieceObject,
-      boardSquaresArray
-    );
+    let legalSquares = getPossibleMoves(startingSquareId, pieceObject, boardSquaresArray);
 
     let legalSquaresJson = JSON.stringify(legalSquares);
     ev.dataTransfer.setData("application/json", legalSquaresJson);
@@ -129,16 +119,12 @@ function drop(ev) {
     const pieceType = piece.classList[1];
     
     const destinationSquare = ev.currentTarget;
-    let   destinationSquareId = destinationSquare.id;
+    let destinationSquareId = destinationSquare.id;
 
     legalSquares=isMoveValidAgainstCheck(legalSquares,startingSquareId,pieceColor,pieceType);
 
     if (pieceType == "king") {
-        let isCheck = isKingInCheck(
-        destinationSquareId,
-        pieceColor,
-        boardSquaresArray
-        );
+        let isCheck = isKingInCheck(destinationSquareId, pieceColor, boardSquaresArray);
         if (isCheck) return;
         isWhiteTurn  ? (whiteKingSquare=destinationSquareId) : (blackKingSquare=destinationSquareId);
     }
@@ -150,11 +136,7 @@ function drop(ev) {
     ) {
         destinationSquare.appendChild(piece);
         isWhiteTurn = !isWhiteTurn;
-        updateBoardSquaresArray(
-        startingSquareId,
-        destinationSquareId,
-        boardSquaresArray
-        );
+        updateBoardSquaresArray(startingSquareId, destinationSquareId, boardSquaresArray);
         checkForCheckMate();
         return;
     }
@@ -171,11 +153,7 @@ function drop(ev) {
         
         destinationSquare.appendChild(piece);
         isWhiteTurn = !isWhiteTurn;
-        updateBoardSquaresArray(
-        startingSquareId,
-        destinationSquareId,
-        boardSquaresArray
-        );
+        updateBoardSquaresArray(startingSquareId, destinationSquareId, boardSquaresArray);
         checkForCheckMate();
         return;
     }
@@ -187,51 +165,27 @@ function getPossibleMoves(startingSquareId, piece, boardSquaresArray) {
   
     let legalSquares = [];
     if (pieceType=="pawn") {
-      legalSquares = getPawnMoves(
-        startingSquareId,
-        pieceColor,
-        boardSquaresArray
-      );
+      legalSquares = getPawnMoves(startingSquareId, pieceColor, boardSquaresArray);
       return legalSquares;
     }
     if  (pieceType=="knight") {
-      legalSquares = getKnightMoves(
-        startingSquareId,
-        pieceColor,
-        boardSquaresArray
-      );
+      legalSquares = getKnightMoves(startingSquareId, pieceColor, boardSquaresArray);
       return legalSquares;
     }
     if  (pieceType=="rook"){
-      legalSquares = getRookMoves(
-        startingSquareId,
-        pieceColor,
-        boardSquaresArray
-      );
+      legalSquares = getRookMoves(startingSquareId, pieceColor, boardSquaresArray);
       return legalSquares;
     }
     if  (pieceType=="bishop") {
-      legalSquares = getBishopMoves(
-        startingSquareId,
-        pieceColor,
-        boardSquaresArray
-      );
+      legalSquares = getBishopMoves(startingSquareId, pieceColor, boardSquaresArray);
       return legalSquares;
     }
     if  (pieceType=="queen"){
-      legalSquares = getQueenMoves(
-        startingSquareId,
-        pieceColor,
-        boardSquaresArray
-      );
+      legalSquares = getQueenMoves(startingSquareId, pieceColor, boardSquaresArray );
       return legalSquares;
     }
     if  (pieceType=="king"){
-        legalSquares = getKingMoves(
-        startingSquareId,
-        pieceColor,
-        boardSquaresArray
-      );
+      legalSquares = getKingMoves(startingSquareId, pieceColor, boardSquaresArray);
       return legalSquares;
     }
 }
@@ -256,17 +210,8 @@ function getAllPossibleMoves(squaresArray, color) {
         let squaresArrayCopy = deepCopyArray(squaresArray);
         const pieceObject ={pieceColor:pieceColor,pieceType:pieceType,pieceId:pieceId}
   
-        let legalSquares = getPossibleMoves(
-          square.squareId,
-          pieceObject,
-          squaresArrayCopy
-        );
-        legalSquares = isMoveValidAgainstCheck(
-          legalSquares,
-          square.squareId,
-          pieceColor,
-          pieceType
-        );
+        let legalSquares = getPossibleMoves(square.squareId, pieceObject, squaresArrayCopy);
+        legalSquares = isMoveValidAgainstCheck(legalSquares, square.squareId, pieceColor,pieceType);
   
         return legalSquares;
       });

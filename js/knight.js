@@ -19,16 +19,9 @@ function getKnightMoves(startingSquareId, pieceColor, boardSquaresArray) {
     moves.forEach((move) => {
       currentFile = file + move[0];
       currentRank = rankNumber + move[1];
-      if (
-        currentFile >= 0 &&
-        currentFile <= 7 &&
-        currentRank > 0 &&
-        currentRank <= 8
-      ) {
+      if (currentFile >= 0 && currentFile <= 7 && currentRank > 0 && currentRank <= 8) {
         let currentSquareId = String.fromCharCode(currentFile + 97) + currentRank;
-        let currentSquare = boardSquaresArray.find(
-          (element) => element.squareId === currentSquareId
-        );
+        let currentSquare = boardSquaresArray.find( (element) => element.squareId === currentSquareId);
         let squareContent = currentSquare.pieceColor;
         if (squareContent != "blank" && squareContent == pieceColor)
           return legalSquares;

@@ -40,9 +40,7 @@ function moveToEighthRankHFile(
     let currentRank = rankNumber;
     let legalSquares = [];
     while (!(currentFile == "h" || currentRank == 8)) {
-      currentFile = String.fromCharCode(
-        currentFile.charCodeAt(currentFile.length - 1) + 1
-      );
+      currentFile = String.fromCharCode(currentFile.charCodeAt(currentFile.length - 1) + 1);
       currentRank++;
       let currentSquareId = currentFile + currentRank;
       let currentSquare = boardSquaresArray.find(
