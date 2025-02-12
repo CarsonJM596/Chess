@@ -6,6 +6,7 @@ let isWhiteTurn = true;
 const boardSquares = document.getElementsByClassName("square");
 const pieces = document.getElementsByClassName("piece");
 const piecesImages = document.getElementsByTagName("img");
+let allowMovement = true;
 
 function makeMove(startingSquareId, destinationSquareId, pieceType, pieceColor, captured){
   moves.push({from: startingSquareId, to:destinationSquareId, pieceType : pieceType, pieceColor:pieceColor, captured:captured});
@@ -85,6 +86,7 @@ function allowDrop(ev) {
 }
 
 function drag(ev) {
+  if (!allowMovement) return;
   const piece = ev.target;
   const pieceColor = piece.getAttribute("color");
   const pieceType =piece.classList[1];
@@ -153,24 +155,29 @@ function drop(ev) {
         return;
     }
 
+    if(pieceType == "pawn" && (destinationSquareId.charAt(1)== 8 || destinationSquareId.charAt(1)== 1)){
+      allowMovement = false;
+      displayPromotionChoices(pieceId, pieceColor, startingSquareId, destinationSquareId, false);
+      updateBoardSquaresOpacity();
+      return;
+    }
+
 
     destinationSquare.appendChild(piece);
     isWhiteTurn = !isWhiteTurn;
-    updateBoardSquaresArray(
-      startingSquareId,
-      destinationSquareId,
-      boardSquaresArray
-    );
+    updateBoardSquaresArray(startingSquareId, destinationSquareId, boardSquaresArra);
     let captured=false;
-    makeMove(startingSquareId,
-      destinationSquareId,pieceType,pieceColor,captured)
+    makeMove(startingSquareId, destinationSquareId,pieceType,pieceColor,captured)
     checkForCheckMate();
     return;
   }
-  if (
-     squareContent.pieceColor!= "blank" &&
-     legalSquares.includes(destinationSquareId)
-  ) {
+  if (squareContent.pieceColor!= "blank" && legalSquares.includes(destinationSquareId)) {
+    if(pieceType == "pawn" && (destinationSquareId.charAt(1)== 8 || destinationSquareId.charAt(1)== 1)){
+      allowMovement = false;
+      displayPromotionChoices(pieceId, pieceColor, startingSquareId, destinationSquareId, false);
+      updateBoardSquaresOpacity();
+      return;
+    }
     let children = destinationSquare.children;
     for (let i = 0; i < children.length; i++) {
         if (!children[i].classList.contains('coordinate')) {
@@ -179,14 +186,9 @@ function drop(ev) {
     }
     destinationSquare.appendChild(piece);
     isWhiteTurn = !isWhiteTurn;
-    updateBoardSquaresArray(
-      startingSquareId,
-      destinationSquareId,
-      boardSquaresArray
-    );
+    updateBoardSquaresArray(startingSquareId,destinationSquareId,boardSquaresArray);
     let captured=true;
-    makeMove(startingSquareId,
-      destinationSquareId,pieceType,pieceColor,captured)
+    makeMove(startingSquareId,destinationSquareId,pieceType,pieceColor,captured);
     checkForCheckMate();
     return;
   }
